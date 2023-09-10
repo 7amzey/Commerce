@@ -1,0 +1,23 @@
+{% extends "auctions/layout.html" %}
+
+<!--line below edited after recording the video-->
+{% block title %}Categories{% endblock %}
+
+{% block body %}
+  <div class="container">
+    <!--line below edited after recording the video-->
+    <h1 class="my-4">Categories</h1>
+    <div class="row">
+      {% for category in categories %}
+        <div class="col-lg-4 col-sm-6 mb-4">
+          <div class="card h-100">
+            <a href="{% url 'auction_by_category' category.name %}"><div style="display: flex; justify-content: center; align-itmes:center; height:400; width:700;"><img src="{{ category.image.url }}" alt="Refresh Please" style="max-height:170px; max-width:297px;"></div></a>
+            <div class="card-body">
+              <h4 class="card-title"><a href="{% url 'auction_by_category' category.name %}" style="color:black;">{{ category.name }}</a></h4>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

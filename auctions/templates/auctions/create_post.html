@@ -1,0 +1,38 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Create Auction{% endblock %}
+
+{% block body %}
+
+  <form action="{% url 'create_listing' %}" method="POST" enctype='multipart/form-data'>
+    {% csrf_token %}
+    {% if message %}
+      <div style="display:flex; justify-content:center; align-items:center;"><div class="alert alert-danger" role="alert" style="display:flex; justify-content:center; align-items:center; height:auto; width:200px;">{{ message }}</div></div>
+    {% endif %}
+    <div class="field_container">
+      <label class="label">Title</label>
+      {{ form.title }}
+    </div>
+    <div class="field_container">
+      <label class="label">Item<br>Description</label>
+      {{ form.description }}
+    </div>
+    <div class="field_container">
+      <label class="label">Starting Price</label>
+      {{ form.start_price }}
+    </div>
+    <div class="field_container">
+      <label class="label">Category</label>
+      {{ form.category }}
+    </div>
+    <div class="field_container">
+      <label class="photo_label">Photo</label>
+      <label for="file" class="image_input">Pick a photo</label>
+      {{ form.image }}
+    </div>
+
+    <div class="field_container">
+      <input type="submit" value="Share" class="submit">
+    </div>
+
+{% endblock %}

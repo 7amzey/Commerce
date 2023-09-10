@@ -1,0 +1,23 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Confirm closing{% endblock %}
+
+{% block body %}
+  <div style="display:flex; justify-content:center; align-items:center;">
+    <div class="closing_container">
+      <div class="alert alert-danger" role="alert" style="text-align:center;">
+        Note:<br>There are no <strong>Bids</strong> on the <strong>Auction</strong>
+      </div>
+      <div class="alert alert-warning" role="alert">
+        Are you sure that you want to <strong>Close</strong> the <strong>Auction</strong>
+      </div>
+      <div style="display:flex; justify-content:center; align-items:center;">
+        <form action="{% url 'confirm_closing' auction.id %}" method="post">
+          {% csrf_token %}
+          <input type="submit" value="Cancel" name="Cancel" class="Cancel_btn">
+          <input type="submit" value="Close" class="details_btn" style="margin:0; padding: 5px 10px 6px 10px;">
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

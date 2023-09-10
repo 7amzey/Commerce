@@ -1,0 +1,148 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}{{ auction.title }}{% endblock %}
+
+{% block body %}
+  {% if auction.is_active == True %}
+    <div class="container">
+      <h1 class="my-4">{{ auction.title }}</h1>
+      <div class="row">
+        {% if auction.image %}
+          <div class="col-md-8" style="display:flex; justify-content:center; align-items:center;">
+            <img class="img-fluid" src="{{ auction.image.url }}" alt="Please Refresh" max-height="500" max-width="750">
+          </div>
+        {% else %}
+          <div class="col-md-8"><img class="img-fluid" src="media/product_image/noimg.png" alt="Please Refresh" height="500" width="750"></div>
+        {% endif %}
+        <div class="col-md-4">
+          <div class="watchlist">
+            <h3 class="my-3">Item Description</h3>
+            {% if request.user.is_authenticated %}
+              <div class="w">
+                <form action="{% url 'watchlists' auction.id %}" method="post">
+                  {% csrf_token %}
+                  {% if auction in request.user.watchlist.all %}
+                    <input class="btn btn-success btn-sm" type="submit" value="Remove from Watchlist">
+                  {% else %}
+                    <input class="btn btn-primary btn-sm" type="submit" value="Add to Watchlist">
+                  {% endif %}
+                </form>
+              </div>
+            {% endif %}
+          </div>
+          <div class="watchlist">
+            {% load humanize %}
+            <div style="margin-bottom:0px;"><strong>Author: </strong><a href="{% url 'myauctions' auction.user.username %}">{{ auction.user }}</a></div>
+            <div style="color:#808080; margin-left:110px; font-size:15px;">{{ auction.created_at|naturaltime }}</div>
+          </div>
+          <div style="margin-bottom:5px;"><strong>Category:</strong><a href="{% url 'auction_by_category' auction.category %}"> {{ auction.category }}</a></div>
+          <p>{{ auction.description }}</p>
+          {% if auction.current_price == null %}
+            <h4>Starting Price: <h5>{{ auction.start_price }}</h5></h4>
+          {% else %}
+            <h4>Current Price: <h5>{{ auction.current_price }}</h5></h4>
+          {% endif %}
+          {% if error_min_value %}
+            <div class="card-text">
+              <div class="alert alert-warning" role="alert">Your bid must be bigger than {{ auction.current_price|default:auction.start_price }}</div>
+            </div>
+          {% endif %}
+          {% if request.user == auction.user %}
+            <form action="{% url 'closing' auction.id %}" method="post">
+              {% csrf_token %}
+              <input type="submit" value="Close" class="btn btn-success" style="margin:10px; width:100%;">
+            </form>
+          {% else %}
+            <form action="{% url 'bidding' auction.id %}" method="post">
+              {% csrf_token %}
+              {{ form }}
+              <input type="submit" value="Bid Now" class="details_btn" style="margin-top: 10px;">
+            </form>
+          {% endif %}
+        </div>
+      </div><br>
+      <h1 class="my-4">Comments</h1>
+      {% if comment_error %}
+        <div class="alert alert-danger" role="alert">
+          Your comment must be less than <strong>100</strong> letter
+        </div>
+      {% endif %}
+      <div class="post-comments">
+        <form action="{% url 'comment' auction.id %}" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="comment">Your Comment</label>
+            {{ comment_form }}
+          </div>
+          <button type="submit" class="btn btn-default" id="comment_id">comment</button>
+        </form>
+      </div>
+      {% load humanize %}
+      {% for comment in comments %}
+        <div class="media" style="border: 1px solid #BFBFBF; padding: 12px; margin: 15px; border-radius: 5px;">
+          <div class="media-body">
+            <h5 style="margin-bottom: 2px;"><a href="{% url 'myauctions' comment.user.username %}" style="color:black;">{{ comment.user }}</a>  <small style="font-size: 13px; color: #808080;">{{ comment.created_at|naturaltime }}</small></h5>
+            <div style="margin-left: 5px; font-size: 16px;">{{ comment.content }}</div>
+          </div>
+        </div>
+      {% empty %}
+        <div style="display:flex; justify-content:center; align-items:center;"><img src="media/product_image/no_comment.JPG" alt=""></div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="container">
+      <h1 class="my-4">{{ auction.title }}</h1>
+      <div class="row">
+        {% if auction.image %}
+          <div class="col-md-8" style="display:flex; justify-content:center; align-items:center;">
+            <img class="img-fluid" src="{{ auction.image.url }}" alt="Please Refresh" max-height="500" max-width="750">
+          </div>
+        {% else %}
+          <div class="col-md-8"><img class="img-fluid" src="media/product_image/noimg.png" alt="Please Refresh" height="500" width="750"></div>
+        {% endif %}
+        <div class="col-md-4">
+          <div class="watchlist">
+            <h3 class="my-3">Item Description</h3>
+            {% if request.user.is_authenticated %}
+              <div class="w">
+                <form action="{% url 'watchlists' auction.id %}" method="post">
+                  {% csrf_token %}
+                  {% if auction in request.user.watchlist.all %}
+                    <input class="btn btn-success btn-sm" type="submit" value="Remove from Watchlist">
+                  {% else %}
+                    <input class="btn btn-primary btn-sm" type="submit" value="Add to Watchlist">
+                  {% endif %}
+                </form>
+              </div>
+            {% endif %}
+          </div>
+          <div class="watchlist">
+            {% load humanize %}
+            <div style="margin-bottom:0px;"><strong>Author: </strong><a href="{% url 'myauctions' auction.user.username %}">{{ auction.user }}</a></div>
+            <div style="color:#808080; margin-left:110px; font-size:15px;">{{ auction.created_at|naturaltime }}</div>
+          </div>
+          <div style="margin-bottom:5px;"><strong>Category:</strong><a href="{% url 'auction_by_category' auction.category %}"> {{ auction.category }}</a></div>
+          <p>{{ auction.description }}</p>
+          {% if auction.current_price == null %}
+            <h4>Starting Price: <h5>{{ auction.start_price }}</h5></h4>
+          {% else %}
+            <h4>Current Price: <h5>{{ auction.current_price }}</h5></h4>
+          {% endif %}
+          <div class="alert alert-info" role="alert" style="text-align:center;">This Auction is <strong>Closed</strong><br>{% if auction.buyer != None %}Buyer : <strong><a href="{% url 'myauctions' auction.buyer.username %}">{{ auction.buyer }}</a></strong>{% endif %}</div>
+        </div>
+      </div><br>
+      <h1 class="my-4">Comments</h1>
+      {% load humanize %}
+      {% for comment in comments %}
+        <div class="media" style="border: 1px solid #BFBFBF; padding: 12px; margin: 15px; border-radius: 5px;">
+          <div class="media-body">
+            <h5 style="margin-bottom: 2px;"><a href="{% url 'myauctions' comment.user.username %}" style="color:black;">{{ comment.user }}</a>  <small style="font-size: 13px; color: #808080;">{{ comment.created_at|naturaltime }}</small></h5>
+            <div style="margin-left: 5px; font-size: 16px;">{{ comment.content }}</div>
+          </div>
+        </div>
+      {% empty %}
+        <div style="display:flex; justify-content:center; align-items:center;"><img src="media/product_image/no_comment.JPG" alt=""></div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endblock %}
